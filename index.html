@@ -20,6 +20,8 @@
             $.post("https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBwTKcteZa9HWbf3_AmaGyFmxN1oZrgvpg",
             function (data) {
                console.log(data); 
+            }).fail((err)=>{
+                console.log("ERROR "+err);
             });
             //key="AIzaSyBwTKcteZa9HWbf3_AmaGyFmxN1oZrgvpg"
             if (navigator.geolocation) {
