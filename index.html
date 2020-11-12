@@ -16,41 +16,26 @@
     <button id="btn" onclick="getLocation()">Get Location</button>
     <script>
         var x = document.getElementById("holder");
-        function getLocation() {
-            $.post("https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBwTKcteZa9HWbf3_AmaGyFmxN1oZrgvpg",
-            function (data) {
-               console.log(data); 
-            }).fail((err)=>{
-                console.log("ERROR "+err.code);
+        function getCoordinates() {
+            return new Promise(function (resolve, reject) {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
             });
-            //key="AIzaSyBwTKcteZa9HWbf3_AmaGyFmxN1oZrgvpg"
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            }
-            else { x.innerHTML = "Geolocation is not supported by this browser."; }
         }
 
-        function showPosition(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-            x.innerHTML = lat + '---' + lon;
+        async function getAddress() {
+            // notice, no then(), cause await would block and 
+            // wait for the resolved result
+            const position = await this.getCoordinates();
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+            let url = "?lat=" + latitude + "&lon=" + longitude;
+
+            // Actually return a value
+            return show(url);
         }
 
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    x.innerHTML = "User denied the request for Geolocation."
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    x.innerHTML = "Location information is unavailable."
-                    break;
-                case error.TIMEOUT:
-                    x.innerHTML = "The request to get user location timed out."
-                    break;
-                case error.UNKNOWN_ERROR:
-                    x.innerHTML = "An unknown error occurred."
-                    break;
-            }
+        function show(url) {
+            x.innerHTML = url;
         }
     </script>
 </body>
